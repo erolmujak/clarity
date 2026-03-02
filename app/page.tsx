@@ -11,15 +11,19 @@ export default function Page() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
+      try {
+        const supabase = createClient()
+        const { data: { user }, error } = await supabase.auth.getUser()
 
-      if (!user) {
+        if (error || !user) {
+          router.push("/auth/login")
+          return
+        }
+
+        setIsAuthed(true)
+      } catch {
         router.push("/auth/login")
-        return
       }
-
-      setIsAuthed(true)
     }
 
     checkAuth()
