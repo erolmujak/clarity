@@ -25,13 +25,15 @@ export default function SignUpPage() {
     setLoading(true)
 
     const supabase = createClient()
+    const redirectUrl = typeof window !== 'undefined'
+      ? (process.env.NEXT_PUBLIC_APP_URL || window.location.origin) + '/'
+      : undefined
+
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo:
-          process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-          `${window.location.origin}/`,
+        emailRedirectTo: redirectUrl,
         data: {
           display_name: displayName || email.split("@")[0],
         },
