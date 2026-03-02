@@ -2,6 +2,9 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { ExpenseTracker } from "@/components/expense-tracker"
 
+// Force dynamic rendering - don't try to pre-render this page
+export const dynamic = 'force-dynamic'
+
 export default async function Page() {
   try {
     const supabase = await createClient()
