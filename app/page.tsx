@@ -1,29 +1,20 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { ExpenseTracker } from "@/components/expense-tracker"
+import { redirect } from "next/navigation"
 
-// Force dynamic rendering - don't try to pre-render this page
+// Force dynamic rendering - must be rendered on each request
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function Page() {
-  try {
-    const supabase = await createClient()
-    const { data: { user }, error } = await supabase.auth.getUser()
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-    if (error) {
-      console.error("[Auth Check] Error getting user:", error)
-      redirect("/auth/login")
-    }
-
-    if (!user) {
-      console.log("[Auth Check] No user found, redirecting to login")
-      redirect("/auth/login")
-    }
-
-    console.log("[Auth Check] User authenticated:", user.id)
-    return <ExpenseTracker />
-  } catch (err) {
-    console.error("[Auth Check] Unexpected error:", err)
+  // If no user, redirect to login
+  if (!user) {
     redirect("/auth/login")
   }
+
+  // User is authenticated, render the app
+  return <ExpenseTracker />
 }
