@@ -395,6 +395,14 @@ const SECTIONS: Array<{ id: SettingsSection; label: string; icon: React.ReactNod
   { id: "security", label: "Security", icon: <Lock className="h-4 w-4" /> },
 ]
 
+const SECTION_TITLES: Record<SettingsSection, string> = {
+  profile: "Profile",
+  language: "Language",
+  currency: "Currency",
+  tags: "Tags",
+  security: "Security",
+}
+
 export function ProfileSettings({ onClose }: ProfileSettingsProps) {
   const router = useRouter()
   const { t } = useTranslation()
@@ -534,7 +542,7 @@ export function ProfileSettings({ onClose }: ProfileSettingsProps) {
           {/* Section title */}
           <div className="mb-8">
             <h1 className="text-2xl font-semibold text-foreground">
-              {t(`settings.${activeSection}`)}
+              {SECTION_TITLES[activeSection]}
             </h1>
           </div>
 
