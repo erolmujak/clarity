@@ -6,7 +6,12 @@
       "Bash(git config user.email \"erolmujak@gmail.com\")",
       "Bash(git config user.name \"Erol Mujak\")",
       "Bash(git add -A)",
-      "Bash(git commit -m \"Initial commit: Clarity expense tracker app with multi-currency support\")"
+      "Bash(git commit -m \"Initial commit: Clarity expense tracker app with multi-currency support\")",
+      "Bash(git add .npmrc package.json .gitignore)",
+      "Bash(git push -f origin main)",
+      "Bash(git add .env.production)",
+      "Bash(git commit -m \"Add production environment variables\")",
+      "Bash(git commit -m \"Fix: Use environment variable for OAuth redirect URL to prevent 0.0.0.0 errors on production\")"
     ]
   }
 }
