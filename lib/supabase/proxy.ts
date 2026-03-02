@@ -50,16 +50,14 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (!user && !isAuthRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
-    return NextResponse.redirect(url)
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin
+    return NextResponse.redirect(`${appUrl}/auth/login`)
   }
 
   // If logged in user tries to access auth pages, redirect to app
   if (user && isAuthRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    return NextResponse.redirect(url)
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin
+    return NextResponse.redirect(`${appUrl}/`)
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
