@@ -1,37 +1,13 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 import { ExpenseTracker } from "@/components/expense-tracker"
 
-export default function Page() {
-  const router = useRouter()
-  const [isAuthed, setIsAuthed] = useState<boolean | null>(null)
+export default async function Page() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const supabase = createClient()
-        const { data: { user }, error } = await supabase.auth.getUser()
-
-        if (error || !user) {
-          router.push("/auth/login")
-          return
-        }
-
-        setIsAuthed(true)
-      } catch {
-        router.push("/auth/login")
-      }
-    }
-
-    checkAuth()
-  }, [router])
-
-  // Don't render anything until we know they're authenticated
-  if (isAuthed !== true) {
-    return null
+  if (!user) {
+    redirect("/auth/login")
   }
 
   return <ExpenseTracker />
