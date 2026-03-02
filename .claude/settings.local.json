@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git init)",
+      "Bash(git config user.email \"erolmujak@gmail.com\")",
+      "Bash(git config user.name \"Erol Mujak\")",
+      "Bash(git add -A)",
+      "Bash(git commit -m \"Initial commit: Clarity expense tracker app with multi-currency support\")"
+    ]
+  }
+}
