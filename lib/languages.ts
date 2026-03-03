@@ -41,11 +41,3 @@ export const LANGUAGES: Language[] = [
 export function getLanguageByCode(code: string): Language | undefined {
   return LANGUAGES.find((l) => l.code === code)
 }
-
-export function getLanguageName(code: string): string {
-  return getLanguageByCode(code)?.name ?? code
-}
-
-export function getLanguageNativeName(code: string): string {
-  return getLanguageByCode(code)?.nativeName ?? code
-}

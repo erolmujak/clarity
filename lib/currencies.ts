@@ -69,18 +69,6 @@ export function getExchangeRate(
   return toRate / fromRate
 }
 
-export function convertAmount(
-  amount: number,
-  fromCurrency: string,
-  toCurrency: string,
-  liveRates?: Record<string, number> | null,
-  rateAtEntry?: number
-): number {
-  if (fromCurrency === toCurrency) return amount
-  const rate = rateAtEntry ?? getExchangeRate(fromCurrency, toCurrency, liveRates)
-  return amount * rate
-}
-
 export function formatCurrency(amount: number, currencyCode: string, locale?: string): string {
   const currency = CURRENCIES.find((c) => c.code === currencyCode)
   const symbol = currency?.symbol ?? currencyCode

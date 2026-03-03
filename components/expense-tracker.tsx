@@ -1,32 +1,40 @@
 "use client"
 
 import { useState } from "react"
-import { ExpenseProvider, useExpenses } from "@/lib/expense-context"
-import { BalanceProvider } from "@/lib/balance-context"
+import { ProfileProvider, useProfile } from "@/lib/contexts/profile-context"
+import { RatesProvider } from "@/lib/contexts/rates-context"
+import { ExpenseProvider, useExpenses } from "@/lib/contexts/expense-context"
+import { BalanceProvider } from "@/lib/contexts/balance-context"
 import { formatCurrency } from "@/lib/currencies"
 import { useTranslation } from "@/lib/i18n"
 import type { ActiveView } from "@/lib/types"
-import { ExpensesSidebar } from "./expenses-sidebar"
-import { ExpenseList } from "./expense-list"
-import { BalanceList } from "./balance-list"
-import { AppHeader } from "./app-header"
-import { MobileSidebarSheet } from "./mobile-sidebar-sheet"
-import { ProfileSettings } from "./profile-settings"
+import { ExpensesSidebar } from "./expenses/expenses-sidebar"
+import { ExpenseList } from "./expenses/expense-list"
+import { BalanceList } from "./balances/balance-list"
+import { AppHeader } from "./layout/app-header"
+import { MobileSidebarSheet } from "./layout/mobile-sidebar-sheet"
+import { ProfileSettings } from "./settings/profile-settings"
 
 export function ExpenseTracker() {
   return (
-    <ExpenseProvider>
-      <ExpenseTrackerInner />
-    </ExpenseProvider>
+    <ProfileProvider>
+      <RatesProvider>
+        <ExpenseProvider>
+          <BalanceProvider>
+            <ExpenseTrackerInner />
+          </BalanceProvider>
+        </ExpenseProvider>
+      </RatesProvider>
+    </ProfileProvider>
   )
 }
 
 function ExpenseTrackerInner() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [activeView, setActiveView] = useState<ActiveView>("expenses")
-  const [sidebarWidth, setSidebarWidth] = useState(320) // w-80 = 320px
+  const [sidebarWidth, setSidebarWidth] = useState(320)
   const [isResizing, setIsResizing] = useState(false)
-  const { loading } = useExpenses()
+  const { loading } = useProfile()
   const { t } = useTranslation()
 
   const handleResizeStart = () => {
@@ -55,10 +63,7 @@ function ExpenseTrackerInner() {
   }
 
   return (
-    // BalanceProvider must be nested inside ExpenseProvider (not outside)
-    // so it can call useExpenses() to access liveRates and globalCurrency.
-    <BalanceProvider>
-      {/* Settings renders as a true full-screen page — no header, no sidebar */}
+    <>
       {activeView === "settings" ? (
         <ProfileSettings onClose={() => setActiveView("expenses")} />
       ) : (
@@ -68,7 +73,6 @@ function ExpenseTrackerInner() {
           onMouseUp={handleResizeEnd}
           onMouseLeave={handleResizeEnd}
         >
-          {/* Main content */}
           <div className="flex flex-1 flex-col overflow-hidden">
             <AppHeader
               onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
@@ -91,16 +95,13 @@ function ExpenseTrackerInner() {
             </main>
           </div>
 
-          {/* Mobile sidebar drawer */}
           <MobileSidebarSheet open={sidebarOpen} onOpenChange={setSidebarOpen} />
 
-          {/* Desktop sidebar (right side) */}
           <div
             className="hidden shrink-0 lg:flex flex-col border-l border-border relative"
             style={{ width: `${sidebarWidth}px` }}
           >
             <ExpensesSidebar />
-            {/* Resize handle */}
             <div
               onMouseDown={handleResizeStart}
               className={`absolute -left-1 top-0 h-full w-1 cursor-col-resize hover:bg-primary/50 transition-colors ${
@@ -111,12 +112,13 @@ function ExpenseTrackerInner() {
           </div>
         </div>
       )}
-    </BalanceProvider>
+    </>
   )
 }
 
 function MobileStats() {
-  const { expenses, monthlyTotalInGlobal, globalCurrency } = useExpenses()
+  const { expenses, monthlyTotalInGlobal } = useExpenses()
+  const { globalCurrency } = useProfile()
   const { t, lang } = useTranslation()
 
   if (!expenses || expenses.length === 0) return null

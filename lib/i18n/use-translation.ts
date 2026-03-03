@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback } from "react"
-import { useExpenses } from "@/lib/expense-context"
+import { useProfile } from "@/lib/contexts/profile-context"
 import { translations, type TranslationKey } from "./translations"
 
 /**
@@ -9,7 +9,7 @@ import { translations, type TranslationKey } from "./translations"
  * Falls back to English if the current language has no entry for a key.
  */
 export function useTranslation() {
-  const { preferredLanguage } = useExpenses()
+  const { preferredLanguage } = useProfile()
 
   const t = useCallback(
     (key: TranslationKey): string => {
